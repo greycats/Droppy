@@ -2,4 +2,5 @@
 <resources>
     <item name="droppy_separator" type="color">#FFBBBBBB</item>
     <item name="droppy_title_color" type="color">#FF333333</item>
+    <item name="popup_background" type="color">#CCE5E5E5</item>
 </resources>

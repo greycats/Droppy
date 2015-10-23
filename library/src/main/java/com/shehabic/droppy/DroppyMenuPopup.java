@@ -36,14 +36,16 @@ public class DroppyMenuPopup {
     protected int mPopupWidth;
     protected int mPopupHeight;
     protected int statusBarHeight = -1;
+    private OnPopupDismissListener mOnPopupDismissListener;
 
     private DroppyMenuPopup(
-        Context mContext,
-        View parentMenuItem,
-        List<DroppyMenuItemInterface> menuItem,
-        DroppyClickCallbackInterface droppyClickCallbackInterface,
-        boolean addTriggerOnAnchorClick,
-        int popupMenuLayoutResourceId
+            Context mContext,
+            View parentMenuItem,
+            List<DroppyMenuItemInterface> menuItem,
+            DroppyClickCallbackInterface droppyClickCallbackInterface,
+            boolean addTriggerOnAnchorClick,
+            int popupMenuLayoutResourceId,
+            OnPopupDismissListener onPopupDismissListener
     ) {
         this.mContext = mContext;
         this.anchor = parentMenuItem;
@@ -58,6 +60,7 @@ public class DroppyMenuPopup {
                 }
             });
         }
+        this.mOnPopupDismissListener = onPopupDismissListener;
     }
 
     public View getMenuView() {
@@ -85,6 +88,9 @@ public class DroppyMenuPopup {
             @Override
             public void onClick(View v) {
                 dismiss();
+                if (mOnPopupDismissListener != null) {
+                    mOnPopupDismissListener.onPopupDismissListener();
+                }
             }
         });
         lp.topMargin -= getActivity(mContext).getWindow().getDecorView().getTop();
@@ -95,9 +101,10 @@ public class DroppyMenuPopup {
         addModal();
         render();
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        adjustDropDownPosition(lp, -20, 30);
+        adjustDropDownPosition(lp, 0, 30);
         mContentView = new PopupViewContainer(mContext);
         detachPopupView();
+        mPopupView.setBackgroundResource(R.drawable.droppy_list_background);
         ((ViewGroup) mContentView).addView(mPopupView);
         mContentView.setFocusable(true);
         mContentView.setClickable(true);
@@ -250,12 +257,22 @@ public class DroppyMenuPopup {
         return null;
     }
 
+    public interface OnPopupDismissListener {
+        void onPopupDismissListener();
+    }
+
     public static class Builder {
         protected Context ctx;
         protected View parentMenuItem;
         protected List<DroppyMenuItemInterface> menuItems = new ArrayList<DroppyMenuItemInterface>();
         protected DroppyClickCallbackInterface callbackInterface;
         protected boolean triggerOnAnchorClick = true;
+
+        public void setOnPopupDismissListener(OnPopupDismissListener onPopupDismissListener) {
+            this.mOnPopupDismissListener = onPopupDismissListener;
+        }
+
+        private OnPopupDismissListener mOnPopupDismissListener;
 
         public Builder(Context ctx, View parentMenuItem) {
             this.ctx = ctx;
@@ -327,7 +344,7 @@ public class DroppyMenuPopup {
         }
 
         public DroppyMenuPopup build() {
-            return new DroppyMenuPopup(ctx, parentMenuItem, menuItems, callbackInterface, triggerOnAnchorClick, -1);
+            return new DroppyMenuPopup(ctx, parentMenuItem, menuItems, callbackInterface, triggerOnAnchorClick, -1, mOnPopupDismissListener);
         }
     }
 }
