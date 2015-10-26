@@ -36,9 +36,9 @@ public class DroppyMenuPopup {
     protected int mPopupWidth;
     protected int mPopupHeight;
     protected int statusBarHeight = -1;
-    private OnPopupDismissListener mOnPopupDismissListener;
+    protected OnPopupDismissListener mOnPopupDismissListener;
 
-    private DroppyMenuPopup(
+    protected DroppyMenuPopup(
             Context mContext,
             View parentMenuItem,
             List<DroppyMenuItemInterface> menuItem,
@@ -272,7 +272,7 @@ public class DroppyMenuPopup {
             this.mOnPopupDismissListener = onPopupDismissListener;
         }
 
-        private OnPopupDismissListener mOnPopupDismissListener;
+        protected OnPopupDismissListener mOnPopupDismissListener;
 
         public Builder(Context ctx, View parentMenuItem) {
             this.ctx = ctx;
